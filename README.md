@@ -151,7 +151,7 @@ kubectl -n todo-app-<YOUR-NAME> apply -f network-policies/allow-ingress.yaml
 
 ### Open Policy Agent - Gatekeeper
 
-[Open Policy Agent](./opa-gatekeep/setup.md)
+[Open Policy Agent](./opa-gatekeeper/setup.md)
 
 ### Kube-Bench
 
