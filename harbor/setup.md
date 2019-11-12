@@ -4,7 +4,7 @@
 
 - Set ENV vor with the ingress domain:
 
-    export HARBOR_DOMAIN="<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io"
+    `export HARBOR_DOMAIN="<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io"`
 
 
 - Helm:
