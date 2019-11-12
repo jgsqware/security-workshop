@@ -24,7 +24,7 @@ $ watch kubectl -n todo-app-<YOUR-NAME> get pods
 
 - When everything is running, open a browser to the address
 
-http://todo-app-<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io
+`http://todo-app-<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io`
 
 ### RBAC
 
