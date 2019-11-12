@@ -1,0 +1,10 @@
+{
+	"auths": {
+		"core.jgsqware.qjif7.k8s.gollum.westeurope.azure.gigantic.io": {
+			"auth": "YWRtaW46SGFyYm9yMTIzNDU="
+		}
+	},
+	"HttpHeaders": {
+		"User-Agent": "Docker-Client/19.03.4-ce (linux)"
+	}
+}

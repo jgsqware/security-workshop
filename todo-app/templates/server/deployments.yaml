@@ -10,6 +10,7 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}-server
+        tier: api
     spec:
       containers:
       - name: {{ .Release.Name }}-server

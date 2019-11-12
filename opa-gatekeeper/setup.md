@@ -3,17 +3,10 @@
 ## Create Needed resources
 
 ```
-kubectl create namespace production
-kubectl create namespace staging
+kubectl create namespace production-<YOUR-NAME>
+kubectl create namespace staging-<YOUR-NAME>
 ```
 
-- Pull,Tag and push `nginx` image to your registry: 
-
-    ```
-    docker pull nginx
-    docker tag nginx core.h5vak.k8s.gollum.westeurope.azure.gigantic.io/security-workshop/nginx
-    docker push core.h5vak.k8s.gollum.westeurope.azure.gigantic.io/security-workshop/nginx
-    ```
 
 ## Set your ImagePullSecret from local registry
 
@@ -26,8 +19,8 @@ Edit the file to remove you registry and keep only the harbor one:
 ```
 {
 "auths": {
-	"core.jtac8.k8s.gollum.westeurope.azure.gigantic.io": {
-		"auth": "YWRtaW46SGFyYm9yMTIzNDU="
+	"core.<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io": {
+		"auth": "your auth token"
 	}
 },
 "HttpHeaders": {
@@ -39,36 +32,46 @@ Edit the file to remove you registry and keep only the harbor one:
 Create the secret:
 
 ```
-kubectl create secret generic harbor-registry \
+kubectl -n gatekeeper-system-<YOUR-NAME> create secret generic harbor-registry \
     --from-file=.dockerconfigjson=./config.json \
     --type=kubernetes.io/dockerconfigjson \
-    -n production
+    -n production-<YOUR-NAME>
 ```
 
 ## Setup Gatekeeper
 
-```
-kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/deploy/gatekeeper.yaml
-```
-
-Install Allowed Repo template:
+- Install Gatekeeper in your namespace 
 
 ```
-kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/demo/agilebank/templates/k8sallowedrepos_template.yaml
+YOURNAME=<YOUR-NAME>;  sed s/\<YOUR-NAME\>/$YOURNAME/g ./opa-gatekeeper/gatekeeper.yaml | kubectl apply -f -
 ```
 
-Install Allowed Repo effective constraint that block other registries than harbor one in `production` namespace:
+- Install Allowed Repo template:
 
 ```
-kubectl apply -f ./repoConstraint.yaml
+kubectl -n gatekeeper-system-<YOUR-NAME> apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/demo/agilebank/templates/k8sallowedrepos_template.yaml
+```
+
+- Enable Sync Audit
+
+```
+kubectl -n gatekeeper-system-<YOUR-NAME> apply -f ./opa-gatekeeper/sync.yaml
+```
+
+- Install Allowed Repo effective constraint that block other registries than harbor one in `production` namespace:
+
+```
+YOURNAME=<YOUR-NAME>;  sed s/\<YOUR-NAME\>/$YOURNAME/g ./opa-gatekeeper/registry/repoConstraint.yaml | kubectl apply -f -
 ```
 
 ## Test Gatekeeper
 
+### Registry limitation
+
 - Create a Nginx deployment from `docker hub` `nginx` image in `Staging`:
 
     ```
-    kubectl apply -f repoConstraint-staging-good.yaml
+    kubectl -n staging-<YOUR-NAME> apply -f opa-gatekeeper/registry/repoConstraint-staging-good.yaml
     ```
 
 - Check if pods is running
@@ -77,7 +80,7 @@ kubectl apply -f ./repoConstraint.yaml
 - Create a Nginx deployment from `docker hub` `nginx` image in `Production`:
 
     ```
-    kubectl apply -f repoConstraint-prod-bad.yaml
+    kubectl -n production-<YOUR-NAME> apply -f opa-gatekeeper/registry/repoConstraint-prod-bad.yaml
 
     Error from server ([denied by prod-repo-is-harbor] container <nginx> has an invalid image repo <nginx:latest>, allowed repos are ["core.jtac8.k8s.gollum.westeurope.azure.gigantic.io"]): error when creating "../opa-gatekeeper/repoConstraint-prod-bad.yaml": admission webhook "validation.gatekeeper.sh" denied the request: [denied by prod-repo-is-harbor] container <nginx> has an invalid image repo <nginx:latest>, allowed repos are ["core.jtac8.k8s.gollum.westeurope.azure.gigantic.io"]
     ```
@@ -85,20 +88,20 @@ kubectl apply -f ./repoConstraint.yaml
 - Create a Nginx deployment from `harbor` `nginx` image in `Production`:
 
     ```
-    kubectl apply -f repoConstraint-prod-good.yaml
+    YOURNAME=<YOUR-NAME>;  sed s/\<YOUR-NAME\>/$YOURNAME/g opa-gatekeeper/registry/repoConstraint-prod-good.yaml | kubectl -n production-$YOURNAME apply -f -
     ```
 
 - Check if pods is running
 
+### Audit feature with request limit
+
 ## Clean up
 
 ```
-kubectl delete namespace production
-kubectl delete namespace staging
+kubectl delete namespace production-<YOUR-NAME>
+kubectl delete namespace staging-<YOUR-NAME>
 ```
 
 
 
-kubectl apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/master/demo/basic/sync.yaml
 
-Limits

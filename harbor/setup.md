@@ -4,19 +4,19 @@
 
 - Set ENV vor with the ingress domain:
 
-    export HARBOR_DOMAIN="iaa8w.k8s.ginger.eu-central-1.aws.gigantic.io"
+    export HARBOR_DOMAIN="<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io"
 
 
 - Helm:
 
     ```
-    sed s/{{DOMAIN}}/$HARBOR_DOMAIN/g values.yaml | helm install --name harbor --namespace harbor -f - ./helm
+    sed s/{{DOMAIN}}/$HARBOR_DOMAIN/g ./harbor/values.yaml | helm install --name harbor-<YOUR-NAME> --namespace harbor-<YOUR-NAME> -f - ./harbor/helm
     ```
 
 - Watch Harbor pods running:
 
     ```
-    watch kubectl get pods -n harbor
+    watch kubectl get pods -n harbor-<YOUR-NAME>
 
     NAME                                      READY   STATUS              RESTARTS   AGE
     harbor-harbor-clair-55cf4dbbb7-vzs4s      2/2     Running             0          46s
@@ -30,20 +30,20 @@
 
 ## Upload images
 
-- Login to the portal: https://core.iaa8w.k8s.ginger.eu-central-1.aws.gigantic.io
-- Create project: `Security Workshop`
+- Login to the portal: https://core.<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io
+- Create project: `securityworkshop`
 - Login to regsitry with docker:
     
     ```
-    docker login --username admin core.h5vak.k8s.gollum.westeurope.azure.gigantic.io
+    docker login --username admin core.<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io
     ```
 
 - Pull,Tag and push vulnerable image to your registry: 
 
     ```
-    docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1
-    docker tag quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1 core.h5vak.k8s.gollum.westeurope.azure.gigantic.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1
-    docker push core.h5vak.k8s.gollum.westeurope.azure.gigantic.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1
+    docker pull nginx:1.12-alpine
+    docker tag nginx:1.12-alpine core.<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io/securityworkshop/nginx:1.12-alpine
+    docker push core.<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io/securityworkshop/nginx:1.12-alpine
     ```
 
 ## Check vulnerabilities on the portal
@@ -51,5 +51,5 @@
 ## Clean up
 
 ```
-helm delete --purge harbor && k delete pvc  -n harbor --all
+helm delete --purge harbor
 ```

@@ -2,11 +2,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nginx
-  namespace: production
 spec:
-  serviceAccount: 
   containers:
     - name: nginx
-      image: core.iaa8w.k8s.ginger.eu-central-1.aws.gigantic.io/security-workshop/nginx:latest
+      image: core.<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io/securityworkshop/nginx:1.12-alpine
   imagePullSecrets:
     - name: harbor-registry

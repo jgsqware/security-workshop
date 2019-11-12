@@ -5,7 +5,7 @@
 - Namespace:
   
   ```
-  kubectl create namespace cert-manager
+  kubectl create namespace cert-manager-<YOUR-NAME>
   ```
 
 - CRDs:
@@ -26,7 +26,7 @@
   ```
   helm install \
     --name cert-manager \
-    --namespace cert-manager \
+    --namespace cert-manager-<YOUR-NAME> \
     --version v0.11.0 \
     jetstack/cert-manager
   ```
@@ -36,7 +36,7 @@
 - Watch all pods are running:
 
   ```
-  watch kubectl get pods -n cert-manager
+  watch kubectl get pods -n cert-manager-<YOUR-NAME>
 
   cert-manager-55fff7f85f-qgmhk              1/1     Running   0          36s
   cert-manager-cainjector-54c4796c5d-hx8lc   1/1     Running   0          36s
@@ -47,7 +47,8 @@
 - Test resource creation:
 
   ```
-    kubectl apply -f ./test-resources.yaml
+    kubectl create namespace cert-manager-<YOUR-NAME>-test
+    kubectl -n cert-manager-<YOUR-NAME>-test apply -f ./cert-manager/test-resources.yaml
   ```
 
 - Check the status of the newly created certificate
@@ -55,7 +56,7 @@
 > You may need to wait a few seconds before cert-manager processes the certificate request
 
 ```
-kubectl describe certificate -n cert-manager-test
+kubectl describe certificate -n cert-manager-<YOUR-NAME>-test
 ...
 Spec:
   Common Name:  example.com
@@ -79,12 +80,13 @@ Events:
 - Clean up the test resources
 
   ```
-  kubectl delete -f ./test-resources.yaml
+  kubectl delete namespace cert-manager-<YOUR-NAME>-test
   ```
 
 - Deploy resource
 
+  Replace with your email in the two following resource file than apply:
   ```
-  kubectl apply -f ./cluster-issuer-lets-encrypt-staging.yaml -f ./cluster-issuer-lets-encrypt.yaml
+  kubectl -n cert-manager-<YOUR-NAME> apply -f ./cert-manager/cluster-issuer-lets-encrypt-staging.yaml -f ./cert-manager/cluster-issuer-lets-encrypt.yaml
   ```
   
