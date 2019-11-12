@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-server
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-server
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-server
+    spec:
+      containers:
+      - name: {{ .Release.Name }}-server
+        image: jgsqware/todo-server:0.4
+        env:
+          - name: MONGODB_BASE_URL
+            value: {{ .Release.Name }}-mongodb
+          - name: MONGODB_PORT
+            value: "27017"
+          - name: MONGODB_USER
+            value: "root"
+          - name: MONGODB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Release.Name }}-mongodb
+                key: mongodb-root-password
+          - name: MONGODB_DB
+            value: "todo-app"
+          
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080

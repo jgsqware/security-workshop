@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-server
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: {{ .Release.Name }}.server.{{ .Values.ClusterID }}.k8s.gollum.westeurope.azure.gigantic.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Release.Name }}-server
+          servicePort: 8080

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-client
+data:
+  config.js: |
+    window.REACT_APP_API_URL='http://{{ .Release.Name }}.server.{{ .Values.ClusterID }}.k8s.gollum.westeurope.azure.gigantic.io'
