@@ -30,7 +30,7 @@
 
 ## Upload images
 
-- Login to the portal: https://core.<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io
+- Login to the portal: `https://core.<YOUR-NAME>.qjif7.k8s.gollum.westeurope.azure.gigantic.io`
 - Create project: `securityworkshop`
 - Login to regsitry with docker:
     
